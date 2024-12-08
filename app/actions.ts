@@ -12,7 +12,9 @@ export async function saveApiKey(apiKey: string): Promise<void> {
   })
 }
 
-export async function transcribeAudio(file: File): Promise<string> {
+type TranscribeInput = File | { url: string }
+
+export async function transcribeAudio(input: TranscribeInput): Promise<string> {
   try {
     const cookieStore = await cookies()
     const apiKey = cookieStore.get('gemini-api-key')?.value
@@ -21,8 +23,13 @@ export async function transcribeAudio(file: File): Promise<string> {
     }
 
     const formData = new FormData()
-    formData.append('file', file)
     formData.append('apiKey', apiKey)
+
+    if ('url' in input) {
+      formData.append('audioUrl', input.url)
+    } else {
+      formData.append('file', input)
+    }
 
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
@@ -34,14 +41,15 @@ export async function transcribeAudio(file: File): Promise<string> {
     })
 
     if (!response.ok) {
-      throw new Error('Transcription failed')
+      const error = await response.json()
+      throw new Error(error.message || 'Transcription failed')
     }
 
     const data = await response.json()
     return data.transcript
   } catch (error) {
     console.error('Transcription error:', error)
-    throw new Error('Failed to process audio file')
+    throw error
   }
 }
 

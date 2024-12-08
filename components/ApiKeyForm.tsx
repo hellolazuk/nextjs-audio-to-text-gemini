@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import { saveApiKey } from '@/app/actions'
 import { KeyRound, Loader2 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 
 export default function ApiKeyForm() {
   const [apiKey, setApiKey] = useState('')
@@ -37,44 +36,41 @@ export default function ApiKeyForm() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-center space-x-2">
-          <KeyRound className="w-6 h-6 text-primary" />
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+      <div className="p-6">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+            <KeyRound className="w-5 h-5 text-blue-600" />
+          </div>
           <div>
-            <CardTitle className="text-2xl">Gemini API Key</CardTitle>
-            <CardDescription>Enter your API key to start using the transcription service</CardDescription>
+            <h2 className="text-base font-semibold text-gray-900">Gemini API Key</h2>
+            <p className="text-sm text-gray-500">Required for transcription service</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <Input
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Enter your Gemini API key"
-              className="pr-36 font-mono"
+              placeholder="Enter your API key"
+              className="pr-24 font-mono bg-[#F8F9FE] border-gray-200 rounded-xl"
             />
             <Button 
               type="submit" 
-              disabled={isLoading} 
-              className="absolute right-0 top-0 rounded-l-none"
+              disabled={isLoading}
+              className="absolute right-0 top-0 bg-blue-600 hover:bg-blue-700 text-white rounded-l-none rounded-r-xl"
             >
               {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                'Save Key'
+                'Save'
               )}
             </Button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
